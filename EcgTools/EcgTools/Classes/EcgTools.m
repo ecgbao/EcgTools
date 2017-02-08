@@ -1279,4 +1279,115 @@ static NSDateFormatter *dateFormatter  = nil;
     return objc;
 }
 
+/**
+ 时间戳转时间yyyyMMddHHmmss
+ 
+ @param time 时间戳
+ @return yyyyMMddHHmmss
+ */
++(NSString *)getDateFromTime:(NSString *)time {
+    NSDate * date = [NSDate dateWithTimeIntervalSince1970:[time longLongValue]];
+    NSDateFormatter *formatter= [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyyMMddHHmmss"];
+    
+    return [formatter stringFromDate:date];
+}
+
+//时间戳比较
++(BOOL)checkTimeStemp:(NSString *)timeStemp{
+    NSDate *senddate = [NSDate date];
+    NSString *now = [NSString stringWithFormat:@"%ld", (long)[senddate timeIntervalSince1970]];
+    
+    float a = [now floatValue] - [timeStemp floatValue];
+    if (a>0) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
+
++ (NSString *)getDateStringWithDate:(NSString *)dateStr
+                         DateFormat:(NSString *)formatString{
+    
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[dateStr floatValue]];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:formatString];
+    NSString *dateString = [dateFormat stringFromDate:date];
+    NSLog(@"date: %@", dateString);
+    return dateString;
+}
+
+//将AIO设备号转换为标准字符串
++ (NSString *)transformAIODeviceSn:(NSString *)snString
+{
+    
+    if (!snString) {
+        return nil;
+    }
+    
+    // 根据规则askSn的注释进行解码
+    /**
+     实际序列号为12个字符（a~z，A~Z，0~9）
+     model：由生产排号并用指定字符命名，数值范围 [0，15]  具体编码可以到服务器上获取配置文件，转换为3个字符
+     year: 需要补齐2位
+     month：需要补齐2位
+     num：补齐5位
+     @return 返回字符格式@"%d:%d:%d:%d"  model（出厂型号编码）：year：month：num
+     
+     更新于2014-11-11见tower，model: [0]E01 [1]E13 [2]A08 [3]A16 [4]B10 [5]B16 [6]B18 [7]B19
+     */
+    /** 直插式序列号：读取失败时默认赋值ff:ff:ff:ff*/
+    if ([snString isEqualToString:@"ff:ff:ff:ff"]) {
+        
+        /** 采集器设备序列号：FFFFFFFFFFFF*/
+        return @"FFFFFFFFFFFF";
+    }
+    
+    NSArray *numbers = [snString componentsSeparatedByString:@":"];
+    NSString *source = [numbers objectAtIndex:0];
+    
+    NSString *resultStr = @"FFF";
+    
+    int result = [source intValue];
+    
+    switch (result) {
+        case 0:
+            resultStr = @"E01";
+            break;
+        case 1:
+            resultStr = @"E13";
+            break;
+        case 2:
+            resultStr = @"A08";
+            break;
+        case 3:
+            resultStr = @"A16";
+            break;
+        case 4:
+            resultStr = @"B10";
+            break;
+        case 5:
+            resultStr = @"B16";
+            break;
+        case 6:
+            resultStr = @"B18";
+            break;
+        case 7:
+            resultStr = @"B19";
+            break;
+        default:
+            resultStr = @"FFF";
+            break;
+    }
+    //转换
+    NSString *year = [NSString stringWithFormat:@"%02d",[[numbers objectAtIndex:1] intValue]];
+    NSString *month = [NSString stringWithFormat:@"%02d",[[numbers objectAtIndex:2] intValue]];
+    NSString *num = [NSString stringWithFormat:@"%05d",[[numbers objectAtIndex:3] intValue]];
+    snString = [NSString stringWithFormat:@"%@%@%@%@",resultStr,year,month,num];
+    
+    
+    
+    return snString;
+}
+
 @end
