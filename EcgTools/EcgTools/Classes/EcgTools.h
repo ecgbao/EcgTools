@@ -405,6 +405,40 @@
 + (NSString *)getDate:(NSString *)date;
 
 /**
+ 时间戳转时间字符串
+ 
+ @param time 时间戳字符串
+ @return 时间字符串 yyyyMMddHHmmss格式
+ */
++(NSString *)getDateFromTime:(NSString *)time ;
+
+/**
+ 时间戳 转 时间字符串
+ 
+ @param sec 时间戳
+ @return 时间字符串
+ */
++(NSString *)secToDateString:(NSTimeInterval)sec;
+
+/**
+ 时间戳与当前时间戳比较 yes:当前时间大， no:当前时间小
+ 
+ @param timeStemp 时间戳字符串
+ @return YES:比当前时间大 NO:比当前时间小
+ */
++(BOOL)checkTimeStemp:(NSString *)timeStemp;
+
+/**
+ *  将date时间戳转变成时间字符串
+ *
+ *  @param dateStr          用于转换的时间
+ *  @param formatString 时间格式(yyyy-MM-dd HH:mm:ss)
+ *
+ *  @return  返回字字符如（2012－8－8 11:11:11）
+ */
++ (NSString *)getDateStringWithDate:(NSString *)dateStr
+                         DateFormat:(NSString *)formatString;
+/**
  *  判断字符串中是否含有中文
  *
  *  @param str 源字符串
@@ -472,4 +506,11 @@
  */
 + (id)transformJsonString:(NSString *)jsonString;
 
+/**
+ 直插设备序列号转换为标准序列号
+ 
+ @param snString 直插设备序列号
+ @return 标准序列号
+ */
++ (NSString *)transformAIODeviceSn:(NSString *)snString;
 @end
